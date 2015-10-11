@@ -18,3 +18,17 @@
 #
 
 include_recipe 'apache2::default'
+
+control_group 'Default recipe apache config' do
+  control 'Apache Service' do
+    it 'Should install Apache2' do
+      expect(package(node['apache']['package'])).to be_installed
+    end
+    
+    it 'should be listening on port(s) ' + node['apache']['listen_ports'].join(' ') do
+      node['apache']['listen_ports'].each do |listen|
+        expect(port(listen)).to be_listening
+      end
+    end
+  end
+end

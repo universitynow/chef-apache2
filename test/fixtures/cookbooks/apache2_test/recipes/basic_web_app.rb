@@ -37,3 +37,13 @@ web_app 'basic_webapp' do
   server_aliases [node['fqdn']]
   docroot app_dir
 end
+
+control_group 'Has basic web app config' do
+  control 'Creates index.html' do
+    expect(file("#{app_dir}/index.html")).to be_file
+  end
+  control 'Creates basic_webapp config' do
+    expect(file("#{node['apache']['dir']}/sites-available/basic_webapp.conf")).to be_file
+    expect(file("#{node['apache']['dir']}/sites-enabled/basic_webapp.conf")).to be_symlink
+  end
+end
