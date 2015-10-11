@@ -36,3 +36,24 @@ web_app 'working' do
   server_aliases [node['fqdn']]
   docroot node['apache']['docroot_dir']
 end
+
+apache_dir = node['apache']['dir']
+
+control_group 'Testing web_app' do
+  control 'Creates broken web_app' do
+    it 'should create broken config' do
+      expect(file("#{apache_dir}/sites-available/broken.conf")).to be_file
+    end
+    it 'should not be enabled' do
+      expect(file("#{apache_dir}/sites-enabled/broken.conf")).to_not be_symlink
+    end
+  end
+  control 'Creates working web_app and leaves enabled' do
+    it 'should create working config' do
+      expect(file("#{apache_dir}/sites-available/working.conf")).to be_file
+    end
+    it 'should be enabled' do
+      expect(file("#{apache_dir}/sites-enabled/working.conf")).to be_symlink
+    end
+  end
+end

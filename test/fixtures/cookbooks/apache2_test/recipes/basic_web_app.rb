@@ -38,12 +38,23 @@ web_app 'basic_webapp' do
   docroot app_dir
 end
 
+apache_dir = node['apache']['dir']
+
 control_group 'Has basic web app config' do
   control 'Creates index.html' do
-    expect(file("#{app_dir}/index.html")).to be_file
+    it 'should create index' do
+      expect(file("#{app_dir}/index.html")).to be_file
+    end
+    it 'should contain Hello World' do
+      expect(file("#{app_dir}/index.html")).to contain('Hello World')
+    end
   end
   control 'Creates basic_webapp config' do
-    expect(file("#{node['apache']['dir']}/sites-available/basic_webapp.conf")).to be_file
-    expect(file("#{node['apache']['dir']}/sites-enabled/basic_webapp.conf")).to be_symlink
+    it 'creates basic config' do
+      expect(file("#{apache_dir}/sites-available/basic_webapp.conf")).to be_file
+    end
+    it 'enables basic config' do
+      expect(file("#{apache_dir}/sites-enabled/basic_webapp.conf")).to be_symlink
+    end
   end
 end
