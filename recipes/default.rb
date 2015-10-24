@@ -25,6 +25,7 @@ end
 
 %w(sites-available sites-enabled mods-available mods-enabled conf-available conf-enabled).each do |dir|
   directory "#{node['apache']['dir']}/#{dir}" do
+    recursive true
     mode '0755'
     owner 'root'
     group node['apache']['root_group']
